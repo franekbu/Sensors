@@ -10,5 +10,7 @@ add_executable(
     TempSensor TempSensor.cpp 
     PHSensor PHSensor.cpp
     Logger Logger.cpp
+    NO3Sensor NO3Sensor.cpp
+    Meter
 )
 

@@ -1,5 +1,6 @@
 #include "TempSensor.hpp"
 #include "PHSensor.hpp"
+#include "NO3Sensor.hpp"
 #include "Logger.hpp"
 #include <fstream>
 #include <iomanip>
@@ -61,8 +62,8 @@ int main() {
     // PHSensor na minLevel ERROR
     std::ostream &s = std::cout;
     Logger errorLog = Logger(s, LogLevel::ERROR);
-    PHSensor error_ph_sesnsor = PHSensor(errorLog);
-    error_ph_sesnsor.read_ph_data();
+    NO3Sensor error_ph_sesnsor = NO3Sensor(errorLog);
+    error_ph_sesnsor.read_no3_data();
 
     return 0;
 }
