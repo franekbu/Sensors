@@ -4,5 +4,5 @@ project(sensors)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-add_executable(sensors main.cpp)
+add_executable(sensors main.cpp TempSensor TempSensor.cpp)
 

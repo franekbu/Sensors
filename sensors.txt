@@ -1,0 +1,6 @@
+Roof,0.5
+Basement,15
+Bathroom,20.3
+Kitchen,20.5
+Garage,-2.0
+Living room,21.4
