@@ -11,9 +11,9 @@ class PHSensor {
 
   public:
     PHSensor() = default;
-    PHSensor(std::vector<double> measurements, double *samples, int sampleCount, Logger log)
-        : measurements(measurements), samples(samples),
-          sampleCount(sampleCount), log(log) {};
+    PHSensor(Logger log, std::vector<double> measurements = {}, double *samples=nullptr, int sampleCount=0)
+        : log(log), measurements(measurements), samples(samples),
+          sampleCount(sampleCount){};
 
     PHSensor(const PHSensor &other);
     PHSensor(PHSensor &&other) noexcept;

@@ -1,5 +1,6 @@
 #include "TempSensor.hpp"
 #include "PHSensor.hpp"
+#include "Logger.hpp"
 #include <fstream>
 #include <iomanip>
 #include <vector>
@@ -7,6 +8,7 @@
 int main() {
 
     std::vector<TempSensor> sensors;
+    Logger mainLog = Logger();
 
     try {
 
@@ -33,7 +35,7 @@ int main() {
         file.close();
 
     } catch (const std::ios_base::failure &e) {
-        std::cerr << "Blad I/O: " << e.what() << std::endl;
+        mainLog.error(std::string("Bład I/O: ") + e.what());
     }
 
     std::cout << "Wczytano " << sensors.size() << " sensorow." << std::endl;
@@ -52,8 +54,15 @@ int main() {
                   << std::endl;
     }
 
+    // defaultowy na minLevel = TRACE
     PHSensor ph_sensor = PHSensor(); 
     ph_sensor.read_ph_data();
+
+    // PHSensor na minLevel ERROR
+    std::ostream &s = std::cout;
+    Logger errorLog = Logger(s, LogLevel::ERROR);
+    PHSensor error_ph_sesnsor = PHSensor(errorLog);
+    error_ph_sesnsor.read_ph_data();
 
     return 0;
 }
