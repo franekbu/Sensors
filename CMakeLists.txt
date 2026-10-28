@@ -9,5 +9,6 @@ add_executable(
     main.cpp 
     TempSensor TempSensor.cpp 
     PHSensor PHSensor.cpp
+    Logger Logger.cpp
 )
 
