@@ -1,4 +1,5 @@
 #include "TempSensor.hpp"
+#include "PHSensor.hpp"
 #include <fstream>
 #include <iomanip>
 #include <vector>
@@ -50,6 +51,9 @@ int main() {
                   << std::setprecision(1) << sensors[i].getValue() << " |"
                   << std::endl;
     }
+
+    PHSensor ph_sensor = PHSensor(); 
+    ph_sensor.read_ph_data();
 
     return 0;
 }
