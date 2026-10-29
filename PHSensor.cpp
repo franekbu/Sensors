@@ -6,9 +6,15 @@
 #include <utility>
 #include <vector>
 
+static void clearTable(double *&table, int &size) {
+    delete[] table;
+    table = nullptr;
+    size = 0;
+}
+
 PHSensor::PHSensor(const PHSensor &other)
     : measurements(other.measurements), sampleCount(other.sampleCount),
-      log(log) {
+      log(other.log) {
     log.trace("coping PHSensor");
     samples = new double[sampleCount];
     std::copy(other.samples, other.samples + sampleCount, samples);
@@ -25,7 +31,7 @@ PHSensor::PHSensor(PHSensor &&other) noexcept
 
 PHSensor::~PHSensor() {
     log.trace("~PHSensor");
-    delete[] samples;
+    clearTable(samples, sampleCount);
     log.trace("~PHSensor");
 }
 
@@ -44,13 +50,30 @@ int PHSensor::getSampleCount() {
     return sampleCount;
 }
 
-// popraw jakos ta metode, napisywanie tablicy do jakiejs funkcji pomocniczej
+static double *resizeTable(int new_memory_size, int elements_count,
+                           double *table_start) {
+
+    if (new_memory_size < elements_count || new_memory_size < 0 ||
+        elements_count < 0) {
+        throw std::invalid_argument(
+            "Nowy rozmiar pamieci nie moze byc mniejszy niz liczba elementow!");
+    }
+
+    double *new_samples = new double[new_memory_size];
+    for (int i = 0; i < elements_count; i++) {
+        new_samples[i] = table_start[i];
+    }
+
+    delete[] table_start;
+    return new_samples;
+}
+
 void PHSensor::read_ph_data() {
     log.trace("PHSensor::read_ph_data");
 
     int sampleCount = 0;
     int memory_located = 10;
-    double *samples = new double[memory_located];
+    double *samples = nullptr;
     try {
         std::ifstream file("ph_samples.txt");
         if (!file.is_open()) {
@@ -59,18 +82,12 @@ void PHSensor::read_ph_data() {
         }
         file.exceptions(std::ifstream::badbit);
 
+        samples = new double[memory_located];
         double record;
         while (file >> record) {
             if (sampleCount == memory_located) {
                 memory_located *= 2;
-                double *new_samples = new double[memory_located];
-
-                for (size_t i = 0; i < sampleCount; i++) {
-                    new_samples[i] = samples[i];
-                }
-
-                delete[] samples;
-                samples = new_samples;
+                samples = resizeTable(memory_located, sampleCount, samples);
             }
             samples[sampleCount] = record;
             sampleCount++;
@@ -78,17 +95,18 @@ void PHSensor::read_ph_data() {
         file.close();
 
         if (sampleCount < memory_located) {
-            double *new_samples = new double[sampleCount];
-            for (size_t i = 0; i < sampleCount; i++) {
-                new_samples[i] = samples[i];
-            }
-
-            delete[] samples;
-            samples = new_samples;
+            samples = resizeTable(sampleCount, sampleCount, samples);
         }
 
     } catch (const std::ios_base::failure &e) {
         log.error(std::string("Bład I/O: ") + e.what());
+        clearTable(samples, sampleCount);
+    } catch (const std::invalid_argument &e) {
+        log.error(std::string("Blad alokacji pamieci: ") + e.what());
+        clearTable(samples, sampleCount);
+    } catch (const std::bad_alloc &e) {
+        log.error(std::string("Blad alokacji pamieci: ") + e.what());
+        clearTable(samples, sampleCount);
     }
 
     std::vector<double> records;
@@ -109,10 +127,16 @@ void PHSensor::read_ph_data() {
         log.error(std::string("Bład I/O: ") + e.what());
     }
 
+    clearTable(this->samples, this->sampleCount);
     this->samples = samples;
     this->sampleCount = sampleCount;
     this->measurements = records;
 
-    std::cout << "Ostatni pomiar: " << this->measurements.back() << std::endl;
+    if (this->measurements.empty()) {
+        std::cout << "Brak pomiarow do odczytu." << std::endl;
+    } else {
+        std::cout << "Ostatni pomiar: " << this->measurements.back()
+                  << std::endl;
+    }
     log.trace("PHSensor::read_ph_data");
 }
