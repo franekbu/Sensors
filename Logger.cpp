@@ -1,31 +1,31 @@
 #include "Logger.hpp"
 
-void Logger::trace(std::string prompt) {
-    if (static_cast<int>(minLevel) <= static_cast<int>(LogLevel::TRACE)) {
+void Logger::trace(const std::string &prompt) const {
+    if (minLevel <= LogLevel::TRACE) {
         stream << prompt << std::endl;
     }
 }
 
-void Logger::debug(std::string prompt) {
-    if (static_cast<int>(minLevel) <= static_cast<int>(LogLevel::DEBUG)) {
+void Logger::debug(const std::string &prompt) const {
+    if (minLevel <= LogLevel::DEBUG) {
         stream << prompt << std::endl;
     }
 }
 
-void Logger::info(std::string prompt) {
-    if (static_cast<int>(minLevel) <= static_cast<int>(LogLevel::INFO)) {
+void Logger::info(const std::string &prompt) const {
+    if (minLevel <= LogLevel::INFO) {
         stream << prompt << std::endl;
     }
 }
 
-void Logger::warn(std::string prompt) {
-    if (static_cast<int>(minLevel) <= static_cast<int>(LogLevel::WARN)) {
+void Logger::warn(const std::string &prompt) const {
+    if (minLevel <= LogLevel::WARN) {
         stream << prompt << std::endl;
     }
 }
 
-void Logger::error(std::string prompt) {
-    if (static_cast<int>(minLevel) <= static_cast<int>(LogLevel::ERROR)) {
+void Logger::error(const std::string &prompt) const {
+    if (minLevel <= LogLevel::ERROR) {
         stream << prompt << std::endl;
     }
 }

@@ -13,9 +13,9 @@ class Logger {
     Logger(std::ostream &s = std::cout, LogLevel level = LogLevel::TRACE)
         : stream(s), minLevel(level) {};
     ~Logger() = default;
-    void trace(std::string prompt);
-    void debug(std::string prompt);
-    void info(std::string prompt);
-    void warn(std::string prompt);
-    void error(std::string prompt);
+    void trace(const std::string &prompt) const;
+    void debug(const std::string &prompt) const;
+    void info(const std::string &prompt) const;
+    void warn(const std::string &prompt) const;
+    void error(const std::string &prompt) const;
 };
