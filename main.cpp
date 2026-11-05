@@ -100,7 +100,8 @@ int main(int argc, char *argv[]) {
     std::vector<TempSensor> sensors;
 
     try {
-        std::string sensors_file = properties.get("sensor.temp.file", "sensors.txt");
+        std::string sensors_file =
+            properties.get("sensor.temp.file", "sensors.txt");
         std::ifstream file(sensors_file);
         if (!file.is_open()) {
             throw std::ios_base::failure(
@@ -145,7 +146,9 @@ int main(int argc, char *argv[]) {
 
     // defaultowy na minLevel = TRACE
     PHSensor ph_sensor = PHSensor(mainLog);
-    ph_sensor.read_ph_data();
+    ph_sensor.read_ph_data(
+        properties.get("sensor.ph.samples", "ph_samples.txt"),
+        properties.get("sensor.ph.measurements", "ph_measurements.txt"));
 
     // PHSensor na minLevel ERROR
     // std::ostream &s = std::cout;

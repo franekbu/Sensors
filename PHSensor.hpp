@@ -1,13 +1,14 @@
 #pragma once
 #include "Logger.hpp"
 #include <vector>
+#include <string>
 
 class PHSensor {
   private:
+    Logger log;
     std::vector<double> measurements;
     double *samples = nullptr;
     int sampleCount = 0;
-    Logger log;
 
   public:
     PHSensor() = default;
@@ -20,8 +21,9 @@ class PHSensor {
     PHSensor(PHSensor &&other) noexcept;
     ~PHSensor();
 
-    void read_ph_data();
-    std::vector<double> getMeasurements();
-    double *getSamples();
-    int getSampleCount();
+    void read_ph_data(const std::string &samples_path,
+                      const std::string &measurements_path);
+    const std::vector<double> &getMeasurements() const;
+    const double *getSamples() const;
+    int getSampleCount() const;
 };
