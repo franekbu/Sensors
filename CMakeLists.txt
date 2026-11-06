@@ -11,10 +11,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(
     sensors 
     main.cpp 
-    TempSensor.cpp 
-    PHSensor.cpp
     Logger.cpp
-    NO3Sensor.cpp
     Properties.cpp
     Sensor.cpp
 )

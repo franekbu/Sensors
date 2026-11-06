@@ -97,64 +97,23 @@ int main(int argc, char *argv[]) {
     mainLog.info(std::string("Using config: ") + config_file);
     mainLog.info(std::string("Using log level: ") + toString(log_level));
 
-    std::vector<TempSensor> sensors;
+    PHSensor ph_sensor =
+        PHSensor(mainLog, std::stod(properties.get("sensor.ph.min", "4")),
+                 std::stod(properties.get("sensor.ph.max", "9")));
 
-    try {
-        std::string sensors_file =
-            properties.get("sensor.temp.file", "sensors.txt");
-        std::ifstream file(sensors_file);
-        if (!file.is_open()) {
-            throw std::ios_base::failure(
-                std::string("Nie udalo sie otworzyc pliku: ") + sensors_file);
-        }
-        file.exceptions(std::ifstream::badbit);
+    ph_sensor.read_data(properties.get("sensor.ph.data", "ph_data.txt"));
 
-        std::string temp_place;
-        double temp_temp; // temporary temperature xd
+    TempSensor temp_sensor =
+        TempSensor(mainLog, std::stod(properties.get("sensor.temp.min", "0")),
+                   std::stod(properties.get("sensor.temp.max", "40")));
 
-        while (std::getline(file, temp_place, ',') && (file >> temp_temp)) {
-            sensors.push_back(TempSensor(temp_place, temp_temp));
-            /*
-            pobieranie doubla zostawia znak końca lini
-            ktory zostalby wczytany przy pobieraniu nowego place
-            igonre przeskakuje przez napotkane \n
-            dzieki czemu nie bedzie pobierane w przyszlosci
-            */
-            file.ignore(1000, '\n');
-        }
-        file.close();
+    temp_sensor.read_data(properties.get("sensor.temp.data", "temp_data.txt"));
 
-    } catch (const std::ios_base::failure &e) {
-        mainLog.error(std::string("Bład I/O: ") + e.what());
-    }
+    NO3Sensor no3_sensor =
+        NO3Sensor(mainLog, std::stod(properties.get("sensor.no3.min", "0")),
+                  std::stod(properties.get("sensor.no3.max", "300")));
 
-    std::cout << "Wczytano " << sensors.size() << " sensorow." << std::endl;
-    std::cout << std::left << std::setw(5) << "Lp." << " | " << std::left
-              << std::setw(25) << "Nazwa sensora" << " |" << std::left
-              << std::setw(12) << "Temperatura" << " |" << std::endl;
-
-    std::cout << "------+---------------------------+-------------+"
-              << std::endl;
-
-    for (std::size_t i = 0; i < sensors.size(); i++) {
-        std::cout << std::left << std::setw(5) << i + 1 << " | " << std::left
-                  << std::setw(25) << sensors[i].getPlace() << " | "
-                  << std::left << std::setw(11) << std::fixed
-                  << std::setprecision(1) << sensors[i].getValue() << " |"
-                  << std::endl;
-    }
-
-    // defaultowy na minLevel = TRACE
-    PHSensor ph_sensor = PHSensor(mainLog);
-    ph_sensor.read_ph_data(
-        properties.get("sensor.ph.samples", "ph_samples.txt"),
-        properties.get("sensor.ph.measurements", "ph_measurements.txt"));
-
-    // PHSensor na minLevel ERROR
-    // std::ostream &s = std::cout;
-    // Logger errorLog = Logger(s, LogLevel::ERROR);
-    NO3Sensor error_ph_sensor = NO3Sensor(mainLog);
-    error_ph_sensor.read_no3_data();
+    no3_sensor.read_data(properties.get("sensor.no3.data", "no3_data.txt"));
 
     return 0;
 }

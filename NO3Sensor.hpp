@@ -1,26 +1,11 @@
 #pragma once
-#include <vector>
 #include "Logger.hpp"
+#include "Sensor.hpp"
+#include <string_view>
 
-class NO3Sensor {
-  private:
-    std::vector<double> measurements;
-    double *samples;
-    int sampleCount;
-    Logger log;
-
+class NO3Sensor : public Sensor {
   public:
-    NO3Sensor() = default;
-    NO3Sensor(Logger log, std::vector<double> measurements = {}, double *samples=nullptr, int sampleCount=0)
-        : log(log), measurements(measurements), samples(samples),
-          sampleCount(sampleCount){};
-
-    NO3Sensor(const NO3Sensor &other);
-    NO3Sensor(NO3Sensor &&other) noexcept;
-    ~NO3Sensor();
-
-    void read_no3_data();
-    std::vector<double> getMeasurements();
-    double *getSamples();
-    int getSampleCount();
+    NO3Sensor(const Logger &logger, double min, double max)
+        : Sensor(logger, min, max) {}
+    std::string_view getName() const override { return "NO3Sensor"; }
 };

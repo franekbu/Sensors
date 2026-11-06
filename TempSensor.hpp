@@ -1,16 +1,11 @@
 #pragma once
-#include <iostream>
-#include <string>
+#include "Logger.hpp"
+#include "Sensor.hpp"
+#include <string_view>
 
-class TempSensor {
-  private:
-    const std::string place;
-    const double value;
-
+class TempSensor : public Sensor {
   public:
-    TempSensor(const std::string place, const double value)
-        : place(place), value(value) {};
-    ~TempSensor() = default;
-    std::string getPlace();
-    double getValue();
+    TempSensor(const Logger &logger, double min, double max)
+        : Sensor(logger, min, max) {}
+    std::string_view getName() const override { return "TempSensor"; }
 };

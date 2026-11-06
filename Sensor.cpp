@@ -31,7 +31,7 @@ void Sensor::read_data(const std::string &data_path) {
                 temp_meas.push_back(
                     SensorReading(std::move(temp_time), temp_value));
             } else {
-                log.warn(temp_time + std::string(" wartosc ") +
+                log.warn(std::string("Wartosc ") +
                          std::to_string(temp_value) +
                          std::string(" poza zakresem."));
             }
