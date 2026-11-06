@@ -1,8 +1,9 @@
 #include "Logger.hpp"
 #include <algorithm>
 #include <cctype>
+#include <chrono>
+#include <ctime>
 
-// TRACE, DEBUG, INFO, WARN, ERROR
 std::optional<LogLevel> parseLogLevel(std::string_view text_view) {
     std::string text{text_view};
     std::transform(text.begin(), text.end(), text.begin(), [](unsigned char c) {
@@ -41,32 +42,43 @@ const char *toString(LogLevel level) {
     }
 }
 
+static std::string getCurrentTimestamp() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(now);
+
+    std::tm *tm = std::localtime(&t);
+
+    char time_str[21];
+    std::strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S ", tm);
+    return time_str;
+}
+
 void Logger::trace(const std::string &prompt) const {
     if (minLevel <= LogLevel::TRACE) {
-        stream << prompt << std::endl;
+        stream << getCurrentTimestamp() << " [TRACE] " << prompt << std::endl;
     }
 }
 
 void Logger::debug(const std::string &prompt) const {
     if (minLevel <= LogLevel::DEBUG) {
-        stream << prompt << std::endl;
+        stream << getCurrentTimestamp() << " [DEBUG] " << prompt << std::endl;
     }
 }
 
 void Logger::info(const std::string &prompt) const {
     if (minLevel <= LogLevel::INFO) {
-        stream << prompt << std::endl;
+        stream << getCurrentTimestamp() << " [INFO] " << prompt << std::endl;
     }
 }
 
 void Logger::warn(const std::string &prompt) const {
     if (minLevel <= LogLevel::WARN) {
-        stream << prompt << std::endl;
+        stream << getCurrentTimestamp() << " [WARN] " << prompt << std::endl;
     }
 }
 
 void Logger::error(const std::string &prompt) const {
     if (minLevel <= LogLevel::ERROR) {
-        stream << prompt << std::endl;
+        stream << getCurrentTimestamp() << " [ERROR] " << prompt << std::endl;
     }
 }
