@@ -16,5 +16,6 @@ add_executable(
     Logger.cpp
     NO3Sensor.cpp
     Properties.cpp
+    Sensor.cpp
 )
 
