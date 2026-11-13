@@ -96,6 +96,8 @@ int main(int argc, char *argv[]) {
     Logger mainLog(*log_stream, log_level);
     mainLog.info(std::string("Using config: ") + config_file);
     mainLog.info(std::string("Using log level: ") + toString(log_level));
+    mainLog.debug(
+        std::string("Wczytane ustawienia:\n" + properties.raport_properties()));
 
     PHSensor ph_sensor =
         PHSensor(mainLog, std::stod(properties.get("sensor.ph.min", "4")),

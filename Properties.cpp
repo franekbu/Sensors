@@ -1,6 +1,7 @@
 #include "Properties.hpp"
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <stdexcept>
 
 bool Properties::has(const std::string &key) const {
@@ -71,6 +72,24 @@ void Properties::load(const std::string &filename) {
                 std::to_string(line_id));
         }
 
-        properties[key] = value;
+        std::regex range_key_pattern("^(.*)\\brange$");
+        std::smatch key_matches;
+
+        if (std::regex_search(key, key_matches, range_key_pattern)) {
+            std::size_t range = value.find('-');
+            properties[std::string(key_matches[1]) + "min"] =
+                value.substr(0, range);
+            properties[std::string(key_matches[1]) + "max"] =
+                value.substr(range + 1);
+        } else {
+            properties[key] = value;
+        }
     }
+}
+
+std::string Properties::raport_properties() const {
+    std::string raport = "";
+    for (auto it = properties.begin(); it != properties.end(); it++)
+        raport += it->first + ": " + it->second + "\n";
+    return raport;
 }
