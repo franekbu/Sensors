@@ -10,12 +10,12 @@ class Sensor {
     bool isValid(double value) const;
 
   protected:
-    Logger log;
+    Logger &log;
     double minValue;
     double maxValue;
     std::vector<SensorReading> measurements;
 
-    Sensor(const Logger &logger, double min, double max)
+    Sensor(Logger &logger, double min, double max)
         : log(logger), minValue(min), maxValue(max) {}
 
   public:

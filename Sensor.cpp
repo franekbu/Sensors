@@ -41,7 +41,7 @@ void Sensor::read_data(const std::string &data_path) {
         measurements = std::move(temp_meas);
 
     } catch (const std::ios_base::failure &e) {
-        log.error(std::string("Bład I/O: ") + e.what());
+        log.error(std::string("Blad I/O: ") + e.what());
     }
     log.trace(std::string(getName()) + "::read_data (end)");
 }

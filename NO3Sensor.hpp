@@ -5,7 +5,7 @@
 
 class NO3Sensor : public Sensor {
   public:
-    NO3Sensor(const Logger &logger, double min, double max)
+    NO3Sensor(Logger &logger, double min, double max)
         : Sensor(logger, min, max) {}
     std::string_view getName() const override { return "NO3Sensor"; }
 };

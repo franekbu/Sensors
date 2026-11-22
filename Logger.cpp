@@ -3,6 +3,7 @@
 #include <cctype>
 #include <chrono>
 #include <ctime>
+#include <stdexcept>
 
 std::optional<LogLevel> parseLogLevel(std::string_view text_view) {
     std::string text{text_view};
@@ -53,32 +54,50 @@ static std::string getCurrentTimestamp() {
     return time_str;
 }
 
-void Logger::trace(const std::string &prompt) const {
-    if (minLevel <= LogLevel::TRACE) {
-        stream << getCurrentTimestamp() << " [TRACE] " << prompt << std::endl;
+void Logger::writeLog(LogLevel level, const std::string &log_msg) const {
+    if (level >= minLevel) {
+        *stream << getCurrentTimestamp() << " [" << toString(level) << "] "
+                << log_msg << std::endl;
     }
+}
+
+void Logger::trace(const std::string &prompt) const {
+    writeLog(LogLevel::TRACE, prompt);
 }
 
 void Logger::debug(const std::string &prompt) const {
-    if (minLevel <= LogLevel::DEBUG) {
-        stream << getCurrentTimestamp() << " [DEBUG] " << prompt << std::endl;
-    }
+    writeLog(LogLevel::DEBUG, prompt);
 }
 
 void Logger::info(const std::string &prompt) const {
-    if (minLevel <= LogLevel::INFO) {
-        stream << getCurrentTimestamp() << " [INFO] " << prompt << std::endl;
-    }
+    writeLog(LogLevel::INFO, prompt);
 }
 
 void Logger::warn(const std::string &prompt) const {
-    if (minLevel <= LogLevel::WARN) {
-        stream << getCurrentTimestamp() << " [WARN] " << prompt << std::endl;
-    }
+    writeLog(LogLevel::WARN, prompt);
 }
 
 void Logger::error(const std::string &prompt) const {
-    if (minLevel <= LogLevel::ERROR) {
-        stream << getCurrentTimestamp() << " [ERROR] " << prompt << std::endl;
+    writeLog(LogLevel::ERROR, prompt);
+}
+
+void Logger::configure(const std::string &output, LogLevel level) {
+    if (configured) {
+        throw std::logic_error("Proba ponownej konfiguracji Loggera.");
     }
+
+    if (output == "stdout") {
+        stream = &std::cout;
+    } else if (output == "stderr") {
+        stream = &std::cerr;
+    } else {
+        file.open(output, std::ios::app);
+        if (!file.is_open()) {
+            throw std::ios_base::failure(std::string("Blad otwarcia pliku: ") +
+                                         output);
+        }
+        stream = &file;
+    }
+    minLevel = level;
+    configured = true;
 }

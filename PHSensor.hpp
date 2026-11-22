@@ -5,7 +5,7 @@
 
 class PHSensor : public Sensor {
   public:
-    PHSensor(const Logger &logger, double min, double max)
+    PHSensor(Logger &logger, double min, double max)
         : Sensor(logger, min, max) {}
     std::string_view getName() const override { return "PHSensor"; }
 };

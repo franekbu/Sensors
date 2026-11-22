@@ -5,7 +5,7 @@
 
 class TempSensor : public Sensor {
   public:
-    TempSensor(const Logger &logger, double min, double max)
+    TempSensor(Logger &logger, double min, double max)
         : Sensor(logger, min, max) {}
     std::string_view getName() const override { return "TempSensor"; }
 };

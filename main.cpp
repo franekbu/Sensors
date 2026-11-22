@@ -75,25 +75,19 @@ int main(int argc, char *argv[]) {
         log_level = *cli_level;
     }
 
-    std::ofstream log_file;
-    std::ostream *log_stream = &std::cerr;
     std::string output = properties.get("log.output", "stderr");
 
-    if (output == "stdout") {
-        log_stream = &std::cout;
-    } else if (output == "stderr") {
-        log_stream = &std::cerr;
-    } else {
-        log_file.open(output, std::ios::app);
-        if (!log_file.is_open()) {
-            std::cerr << "Nie mozna otworzyc pliku logu: " << output
-                      << std::endl;
-            return 1;
-        }
-        log_stream = &log_file;
+    Logger &mainLog = Logger::instance();
+    try {
+        mainLog.configure(output, log_level);
+    } catch (const std::ios_base::failure &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    } catch (const std::logic_error &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
     }
 
-    Logger mainLog(*log_stream, log_level);
     mainLog.info(std::string("Using config: ") + config_file);
     mainLog.info(std::string("Using log level: ") + toString(log_level));
     mainLog.debug(
