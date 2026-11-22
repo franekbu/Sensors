@@ -1,8 +1,6 @@
 #include "Logger.hpp"
-#include "NO3Sensor.hpp"
-#include "PHSensor.hpp"
+#include "Meter.hpp"
 #include "Properties.hpp"
-#include "TempSensor.hpp"
 #include <fstream>
 #include <getopt.h>
 #include <iomanip>
@@ -97,19 +95,19 @@ int main(int argc, char *argv[]) {
         PHSensor(mainLog, std::stod(properties.get("sensor.ph.min", "4")),
                  std::stod(properties.get("sensor.ph.max", "9")));
 
-    ph_sensor.read_data(properties.get("sensor.ph.data", "ph_data.txt"));
-
     TempSensor temp_sensor =
         TempSensor(mainLog, std::stod(properties.get("sensor.temp.min", "0")),
                    std::stod(properties.get("sensor.temp.max", "40")));
-
-    temp_sensor.read_data(properties.get("sensor.temp.data", "temp_data.txt"));
 
     NO3Sensor no3_sensor =
         NO3Sensor(mainLog, std::stod(properties.get("sensor.no3.min", "0")),
                   std::stod(properties.get("sensor.no3.max", "300")));
 
-    no3_sensor.read_data(properties.get("sensor.no3.data", "no3_data.txt"));
+    Meter meter = Meter(ph_sensor, temp_sensor, no3_sensor);
+
+    meter.read_all(properties.get("sensor.ph.data", "ph_data.txt"),
+                   properties.get("sensor.temp.data", "temp_data.txt"),
+                   properties.get("sensor.no3.data", "no3_data.txt"));
 
     return 0;
 }

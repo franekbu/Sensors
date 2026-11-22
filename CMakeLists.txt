@@ -14,5 +14,6 @@ add_executable(
     Logger.cpp
     Properties.cpp
     Sensor.cpp
+    Meter.cpp
 )
 
