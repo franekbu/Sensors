@@ -4,3 +4,4 @@ build/
 build-coverage/
 coverage_report/
 coverage.info
+commands_test.txt

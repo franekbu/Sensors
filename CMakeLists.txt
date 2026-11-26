@@ -41,6 +41,7 @@ add_executable(unit_tests
     tests/test_sensors.cpp
     tests/test_Sensor.cpp
     tests/test_Meter.cpp
+    tests/test_Properties.cpp
 )
 target_link_libraries(unit_tests
     PRIVATE sensors_lib GTest::gtest_main
